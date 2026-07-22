@@ -1,0 +1,4 @@
+interface:
+  display_name: "Creator Video Workflow"
+  short_description: "Run video acquisition, teardown, editing, and QA as one workflow"
+  default_prompt: "Use $creator-video-workflow to take this video from acquisition through teardown, editing recommendations, and final QA."

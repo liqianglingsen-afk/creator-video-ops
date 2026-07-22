@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ report_title }}</title>
+  <style>
+    :root {
+      --bg: {{ style.bg }};
+      --paper: {{ style.paper }};
+      --ink: {{ style.ink }};
+      --muted: {{ style.muted }};
+      --line: {{ style.line }};
+      --accent: {{ style.accent }};
+      --accent-2: {{ style.accent_2 }};
+      --highlight: {{ style.highlight }};
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      line-height: 1.72;
+    }
+    a { color: var(--accent); }
+    img { display: block; max-width: 100%; border-radius: 6px; }
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 18px 0 64px;
+    }
+    .hero {
+      min-height: 0;
+      display: block;
+      padding: 18px 0 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .hero h1 {
+      max-width: 920px;
+      margin: 0 0 12px;
+      font-size: clamp(30px, 5vw, 60px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .side-by-side {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+    .matched-media {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .matched-media img {
+      flex: 1 1 auto;
+      min-height: 320px;
+      object-fit: cover;
+      background: #111827;
+    }
+    .matched-media.media-full img,
+    .matched-media.media-stack img {
+      flex: 0 0 auto;
+      min-height: 0;
+      height: auto;
+      object-fit: contain;
+    }
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: color-mix(in srgb, var(--paper) 78%, transparent);
+    }
+    section {
+      padding: 34px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    h2 {
+      margin: 0 0 18px;
+      font-size: 27px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+    h3 {
+      margin: 20px 0 10px;
+      font-size: 19px;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+    .summary-grid,
+    .score-grid,
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .panel,
+    article[data-contract] {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .metric {
+      font-size: 31px;
+      line-height: 1.05;
+      color: var(--accent);
+      font-weight: 760;
+    }
+    .muted { color: var(--muted); }
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .shot-time {
+      color: var(--accent);
+      font-weight: 760;
+      margin-bottom: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+    th {
+      background: color-mix(in srgb, var(--accent) 10%, var(--paper));
+      color: var(--ink);
+    }
+    tr:last-child td { border-bottom: 0; }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: color-mix(in srgb, var(--highlight) 35%, var(--paper));
+      padding: 12px 14px;
+      border-radius: 6px;
+    }
+    .step-list {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .step-list li { margin: 8px 0; }
+    .frame-caption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @media (max-width: 720px) {
+      .page { width: min(100% - 20px, 1180px); padding-top: 18px; }
+      .hero { min-height: 0; padding: 16px 0 20px; }
+      .side-by-side { grid-template-columns: 1fr; }
+      .matched-media img,
+      .matched-media.media-full img,
+      .matched-media.media-stack img {
+        min-height: 0;
+        height: auto;
+        object-fit: contain;
+      }
+      th,
+      td { font-size: 13px; padding: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <h1>{{ report_title }}</h1>
+        <div class="meta">
+          <span class="pill">{{ platform }}</span>
+          <span class="pill">{{ source_quality_label }}</span>
+          <span class="pill">当前分 {{ current_score }}/100</span>
+          <span class="pill">目标分 {{ target_score }}/100</span>
+        </div>
+      </div>
+    </header>
+
+    <section id="source">
+      <h2>源流质量诊断</h2>
+      <div class="summary-grid">
+        <div class="panel"><div class="muted">视频链接</div><strong>{{ source.original_video_link }}</strong></div>
+        <div class="panel"><div class="muted">平台/页面标称</div><strong>{{ source.page_resolution }}</strong></div>
+        <div class="panel"><div class="muted">实际分析源</div><strong>{{ source.selected_source }}</strong></div>
+        <div class="panel"><div class="muted">媒体探测分辨率</div><strong>{{ source.probed_resolution }}</strong></div>
+        <div class="panel"><div class="muted">抽帧分辨率</div><strong>{{ source.frame_resolution }}</strong></div>
+      </div>
+      <p>{{ source.mismatch_explanation }}</p>
+    </section>
+
+    <section id="summary">
+      <h2>结论摘要</h2>
+      <div class="summary-grid">
+        <div class="panel"><div class="muted">一句话判断</div><p>{{ verdict }}</p></div>
+        <div class="panel"><div class="muted">最大增长阻碍</div><p>{{ biggest_blocker }}</p></div>
+        <div class="panel"><div class="muted">最高杠杆修复</div><p>{{ highest_leverage_fix }}</p></div>
+      </div>
+    </section>
+
+    <section id="hook">
+      <h2>前3秒语言心理钩子</h2>
+      <table>
+        <thead><tr><th>时间</th><th>台词/字幕</th><th>心理机制</th><th>音画同步</th><th>优化</th></tr></thead>
+        <tbody>
+          {% for item in first_3s %}
+          <tr><td>{{ item.time }}</td><td>{{ item.line }}</td><td>{{ item.mechanism }}</td><td>{{ item.sync }}</td><td>{{ item.fix }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section id="score">
+      <h2>综合评分体系</h2>
+      <div class="summary-grid">
+        <div class="panel"><div class="muted">当前总分</div><div class="metric">{{ current_score }}</div></div>
+        <div class="panel"><div class="muted">目标总分</div><div class="metric">{{ target_score }}</div></div>
+        <div class="panel"><div class="muted">分段解释</div><p>{{ score_band }}</p></div>
+      </div>
+      <table>
+        <thead><tr><th>维度</th><th>权重</th><th>得分</th><th>扣分证据</th><th>提分优先级</th></tr></thead>
+        <tbody>
+          {% for row in score_rows %}
+          <tr><td>{{ row.dimension }}</td><td>{{ row.weight }}</td><td>{{ row.score }}</td><td>{{ row.evidence }}</td><td>{{ row.priority }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section id="script">
+      <h2>脚本结构与留存</h2>
+      <div class="panel">{{ script_structure }}</div>
+    </section>
+
+    <section id="visuals">
+      <h2>逐镜头视觉拆解</h2>
+      <div class="timeline">
+        {% for shot in shots %}
+        <article data-contract="shot">
+          <div class="shot-time">{{ shot.time }}</div>
+          <img src="{{ shot.image }}" alt="{{ shot.alt }}">
+          <div class="frame-caption">{{ shot.caption }}</div>
+          <p><strong>画面/运镜：</strong>{{ shot.visual }}</p>
+          <p><strong>留存功能：</strong>{{ shot.retention }}</p>
+          <p><strong>落地动作：</strong>{{ shot.action }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="sync">
+      <h2>高光句音画同步</h2>
+      <table>
+        <thead><tr><th>类型</th><th>时间</th><th>句子</th><th>音频重点</th><th>画面重点</th><th>字幕重点</th><th>剪辑重点</th><th>结论/修复</th></tr></thead>
+        <tbody>
+          {% for line in highlight_lines %}
+          <tr data-contract="highlight-line"><td>{{ line.type }}</td><td>{{ line.time }}</td><td>{{ line.text }}</td><td>{{ line.audio }}</td><td>{{ line.visual }}</td><td>{{ line.subtitle }}</td><td>{{ line.edit }}</td><td>{{ line.verdict }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section id="good">
+      <h2>表现好的地方：1:1图文复刻</h2>
+      <div class="card-grid">
+        {% for card in good_cards %}
+        <article data-contract="good-card">
+          <img src="{{ card.image }}" alt="{{ card.alt }}">
+          <h3>{{ card.title }}</h3>
+          <p><strong>为什么有效：</strong>{{ card.why }}</p>
+          <p><strong>1:1拍法：</strong>{{ card.shooting }}</p>
+          <p><strong>剪映步骤：</strong>{{ card.jianying }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="bad">
+      <h2>表现不好的地方：优化后方案</h2>
+      <div class="card-grid">
+        {% for card in bad_cards %}
+        <article data-contract="bad-card">
+          <img src="{{ card.image }}" alt="{{ card.alt }}">
+          <h3>{{ card.title }}</h3>
+          <p><strong>当前问题：</strong>{{ card.problem }}</p>
+          <p><strong>优化方案：</strong>{{ card.optimized }}</p>
+          <p><strong>预期提分：</strong>{{ card.score_lift }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="subtitles">
+      <h2>字幕字体字号位置包装</h2>
+      <h3>字幕测量</h3>
+      <table>
+        <thead><tr><th>样本帧</th><th>字幕高度</th><th>1080p归一高度</th><th>底部边距</th><th>安全区判断</th><th>置信度</th></tr></thead>
+        <tbody>
+          {% for row in subtitle_measurements %}
+          <tr><td>{{ row.frame }}</td><td>{{ row.height }}</td><td>{{ row.normalized_height }}</td><td>{{ row.bottom_margin }}</td><td>{{ row.safe_area }}</td><td>{{ row.confidence }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p><strong>字号参考来源：</strong>{{ subtitle_reference }}</p>
+      <p class="callout">{{ software_size_note }}</p>
+    </section>
+
+    <section id="ops">
+      <h2>拍摄剪辑运镜抠像蒙版对齐剪映操作</h2>
+      <div class="panel">{{ jianying_operations }}</div>
+    </section>
+
+    <section id="style">
+      <h2>风格匹配与HTML包装</h2>
+      <div class="summary-grid">
+        <div class="panel"><div class="muted">主色</div><strong>{{ style.dominant_color }}</strong></div>
+        <div class="panel"><div class="muted">强调色</div><strong>{{ style.accent }}</strong></div>
+        <div class="panel"><div class="muted">风格情绪</div><strong>{{ style.mood }}</strong></div>
+        <div class="panel"><div class="muted">视觉类别</div><strong>{{ style.category }}</strong></div>
+      </div>
+      <p>{{ style.reason }}</p>
+    </section>
+
+    <section id="checklist">
+      <h2>小白照做清单</h2>
+      <ol class="step-list">
+        {% for item in checklist %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ol>
+    </section>
+  </main>
+</body>
+</html>

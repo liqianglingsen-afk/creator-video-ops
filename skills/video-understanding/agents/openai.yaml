@@ -1,0 +1,4 @@
+interface:
+  display_name: "Video Understanding"
+  short_description: "Acquire video evidence, metadata, frames, and transcripts"
+  default_prompt: "Use $video-understanding to inspect this video source and build an evidence pack."

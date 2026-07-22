@@ -1,0 +1,4 @@
+interface:
+  display_name: "Post-production Review"
+  short_description: "Score finished videos and generate actionable QA reports"
+  default_prompt: "Use $postproduction-review to score this finished video and generate HTML and JSON QA reports."

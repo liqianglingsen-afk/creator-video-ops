@@ -1,0 +1,4 @@
+interface:
+  display_name: "Short Video Forensic Teardown"
+  short_description: "中文短视频法医级图文拆解工作流"
+  default_prompt: "Use $short-video-forensic-teardown to 拆解这个短视频并输出图文并茂 HTML。"

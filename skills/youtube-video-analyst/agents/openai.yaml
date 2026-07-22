@@ -1,0 +1,4 @@
+interface:
+  display_name: "YouTube Video Analyst"
+  short_description: "Fetch YouTube transcripts and analyze long-form videos"
+  default_prompt: "Use $youtube-video-analyst to collect transcript evidence and analyze this YouTube video."

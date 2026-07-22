@@ -1,0 +1,4 @@
+interface:
+  display_name: "Viral Video Deep Dive"
+  short_description: "Route legacy teardowns and probe platform media sources"
+  default_prompt: "Use $viral-video-deep-dive to diagnose this platform source and route the teardown."

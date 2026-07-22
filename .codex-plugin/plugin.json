@@ -1,0 +1,18 @@
+{
+  "name": "creator-video-ops",
+  "version": "0.1.0",
+  "description": "Acquire, understand, forensically deconstruct, improve, and quality-check creator videos.",
+  "author": {
+    "name": "Mayn"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Creator Video Ops",
+    "shortDescription": "A complete evidence-backed workflow for creator video operations.",
+    "longDescription": "Creator Video Ops combines source acquisition, video understanding, Chinese short-video forensic teardown, concrete Jianying/CapCut editing recommendations, and Framecheck post-production QA in one Codex plugin.",
+    "developerName": "Mayn",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Take this video through source verification, forensic teardown, executable editing recommendations, and final QA."
+  }
+}
