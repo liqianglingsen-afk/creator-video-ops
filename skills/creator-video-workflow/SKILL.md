@@ -13,7 +13,7 @@ Coordinate the existing specialist Skills. Do not reimplement their detailed ana
 - Reference teardown only: invoke `short-video-forensic-teardown`.
 - Metadata, download, transcript, or frame extraction only: invoke `video-understanding`; use `youtube-video-analyst` or `viral-video-deep-dive` helpers when platform-specific handling is needed.
 - Finished-video score only: invoke `postproduction-review`.
-- No revised final video: complete the editing plan and mark final QA as pending instead of inventing a score.
+- Optimization requested and source available: render a separate first cut using existing material. For plan-only work or an unavailable export, mark final QA pending.
 
 ## Stage 1: Preserve the Source Chain
 
@@ -40,11 +40,11 @@ Convert findings into a priority-ordered execution list:
 3. Packaging polish.
 4. Optional experiments.
 
-Every item must include timestamp, intended result, Jianying/CapCut operation, parameters or ranges, required source asset, and completion check.
+Use the [edit-plan contract](../short-video-forensic-teardown/references/edit-plan.md). Set a minimum of 85/100, choose a higher brief when applicable, and build a source-to-output cut list Codex can execute. Render and inspect a new file when asked to optimize. Specify new content only for a demonstrated gap after examining available material or reviewing a trial cut.
 
 ## Stage 5: Review the Revised Final Video
 
-When a revised video exists, invoke `postproduction-review` with the most relevant preset. For multiple files or a folder, use batch mode. Link the teardown report, editing plan, QA report, and remaining blockers in the final handoff.
+When a revised video exists, invoke `postproduction-review` with the most relevant preset. For multiple files or a folder, use batch mode. Rescore content against the same ten dimensions and evidence caps when content is in scope. Report content and technical QA separately, with exact file, baseline, target and revised score for each. If either requested check falls short, revise recoverable cuts or document the remaining evidence and the minimum pickup. Link the cut, execution file, reports and outstanding items.
 
 Treat platform download credentials as task-local authorization. Never place cookies, tokens, or downloaded copyrighted media in the plugin repository or generated public examples.
 

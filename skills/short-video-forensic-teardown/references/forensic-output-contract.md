@@ -36,7 +36,7 @@ The report is a forensic artifact, not a generic opinion article. It must be fra
    - Use the fixed 100-point rubric in `score-rubric.md`.
    - Include all 10 fixed dimensions and their scores.
    - Include evidence for every deduction.
-   - Include current score, target score, cap rules applied, and priority lift order.
+   - Show raw sum / 98, normalized current score / 100, optimization target ≥85, cap evidence and the priority order. See `edit-plan.md` for required HTML fields, including the cut list and fallback branch.
    - Do not change scoring weights by video category.
 
 5. `脚本结构与留存`
@@ -64,7 +64,7 @@ The report is a forensic artifact, not a generic opinion article. It must be fra
    - Minimum 3 cards.
    - Current issue screenshot.
    - Why it hurts retention/trust/conversion.
-   - Optimized line, visual, subtitle packaging, edit action, and expected score lift.
+   - Link each proposed fix to the cut list. State which deduction it addresses; label any estimated score change as provisional.
    - Do not teach 1:1 weak execution unless full replication was requested.
    - In HTML, mark each card with `data-contract="bad-card"`.
 

@@ -18,8 +18,9 @@ If the user explicitly invokes `viral-video-deep-dive`, still use this workflow 
 - Build a highlight-line audio-visual sync table for 爆点句、结论句、反差句、冲突句、价值句、情绪句、结果句.
 - Good parts get 1:1 beginner replication cards.
 - Bad parts get optimized replacement cards, not replication cards, unless the user explicitly asks to fully replicate the whole video.
-- Every recommendation must include concrete 剪映/CapCut/Jianying-operable parameters or steps.
-- Use the fixed 100-point score rubric. Do not change weights by video category.
+- Prioritize runnable Codex operations. Include concrete timeline parameters that also transfer to 剪映/CapCut; give manual steps when a particular operation requires the editor.
+- Set the minimum short-video optimization target to **85/100** (honor a higher brief). Keep all ten weights: they sum to 98; compare the unrounded normalized score to the target.
+- Build the existing-footage cut first using [the edit-plan contract](references/edit-plan.md). If asked to optimize, render a separate cut with Codex and rescore it. If only asked for analysis, deliver the runnable plan. Escalate to new content only for a documented gap.
 - Use the fixed HTML framework template, but adapt CSS variables to the current video's extracted style profile.
 - Measure or explicitly estimate subtitle rendered size and bottom safe area from frames when visual evidence is available.
 
@@ -107,6 +108,7 @@ python "<skill-dir>/scripts/extract_style_profile.py" "<frames-dir>" -o "<style-
    - Good-part replication cards: at least 3, only for execution worth copying.
    - Weak-part optimization cards: at least 3, optimized replacement only unless full replication was requested.
    - 100-point score with all 10 fixed dimensions, current score, target score, deductions, evidence, cap rules, and priority improvements.
+   - Include the edit decision list, the planned route and any evidence-backed fallback from `references/edit-plan.md`. Show source and revised scores separately.
    - Subtitle section must include 字幕测量, 字号参考来源, and the software-difference note from `jianying-ops.md`.
 
 7. Generate the HTML artifact.

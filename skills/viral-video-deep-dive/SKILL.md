@@ -132,9 +132,9 @@ Return the report in Chinese with these sections:
    - Note unavailable fields instead of inventing numbers
 
 4. `综合评分体系`
-   - Use `references/short-video-score-rubric.md`
+   - Use the current [ten-dimension rubric](../short-video-forensic-teardown/references/score-rubric.md) for new work; the historical rubric is for comparison within a previously scored report.
    - Score every dimension with timestamp/frame/text evidence
-   - Include current score and target score after optimization
+   - Set a minimum optimization goal of 85/100. Use the [existing-footage edit plan](../short-video-forensic-teardown/references/edit-plan.md) and keep forecasts separate from exported-file scores.
 
 5. `核心观点`
    - Main claim

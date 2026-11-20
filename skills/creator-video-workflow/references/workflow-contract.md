@@ -7,8 +7,8 @@ Track each stage as `complete`, `blocked`, `not_requested`, or `pending_user_rev
 | Source acquisition | Original URL/path, resolved source, actual probed resolution, and any limitations |
 | Video understanding | Transcript source, dense opening frames, timeline frames, and metadata |
 | Forensic teardown | Validated HTML report with required contract markers and local evidence images |
-| Editing plan | Priority, timestamp, operation, parameters, assets, and completion check for every action |
-| Final QA | postscore HTML/JSON report for the revised file, coverage, score, and release verdict |
+| Editing plan | Source and output timecodes, existing assets, executable operations and checks; pickup brief only for an evidenced gap |
+| Final QA | Exact export, baseline and revised score per requested rubric, target ≥85, technical HTML/JSON, remaining gap |
 
 ## Handoff Layout
 

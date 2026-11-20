@@ -155,6 +155,8 @@
       padding: 12px 14px;
       border-radius: 6px;
     }
+    #edit-plan { overflow-x: auto; }
+    #edit-plan pre { white-space: pre-wrap; overflow-wrap: anywhere; }
     .step-list {
       margin: 0;
       padding-left: 20px;
@@ -190,7 +192,7 @@
           <span class="pill">{{ platform }}</span>
           <span class="pill">{{ source_quality_label }}</span>
           <span class="pill">当前分 {{ current_score }}/100</span>
-          <span class="pill">目标分 {{ target_score }}/100</span>
+          <span class="pill">目标分 {{ target_score | default(85) }}/100</span>
         </div>
       </div>
     </header>
@@ -231,8 +233,8 @@
     <section id="score">
       <h2>综合评分体系</h2>
       <div class="summary-grid">
-        <div class="panel"><div class="muted">当前总分</div><div class="metric">{{ current_score }}</div></div>
-        <div class="panel"><div class="muted">目标总分</div><div class="metric">{{ target_score }}</div></div>
+        <div class="panel"><div class="muted">当前总分</div><div class="metric" data-contract="current-score">{{ current_score }}</div><small>原始分 <span data-contract="raw-score">{{ raw_score }}</span> / 98</small></div>
+        <div class="panel"><div class="muted">目标总分</div><div class="metric" data-contract="optimization-target">{{ target_score | default(85) }}</div></div>
         <div class="panel"><div class="muted">分段解释</div><p>{{ score_band }}</p></div>
       </div>
       <table>
@@ -306,6 +308,27 @@
         </article>
         {% endfor %}
       </div>
+    </section>
+
+    <section id="edit-plan">
+      <h2>现有素材剪辑单</h2>
+      <p>处理方式　<strong data-contract="edit-route">{{ edit_route }}</strong></p>
+      <p>{{ edit_basis }}</p>
+      {% if edit_steps %}
+      <table>
+        <thead><tr><th>源素材与入出点</th><th>成片位置</th><th>轨道、操作与参数</th><th>对应扣分</th><th>验收条件</th></tr></thead>
+        <tbody>{% for step in edit_steps %}
+          <tr data-contract="edit-step"><td>{{ step.source }}</td><td>{{ step.destination }}</td><td>{{ step.operation }}</td><td>{{ step.deduction }}</td><td>{{ step.check }}</td></tr>
+        {% endfor %}</tbody>
+      </table>
+      {% if execution_file %}<p data-contract="edit-execution"><a href="{{ execution_file }}">打开剪辑脚本或工程</a></p>
+      {% else %}<pre data-contract="edit-execution">{{ execution_command }}</pre>{% endif %}
+      {% endif %}
+      {% if edit_route == "需补充素材" %}
+      <h3>剪辑仍缺哪项证据</h3><p data-contract="edit-limit">{{ edit_limit }}</p>
+      <h3>最小补拍单</h3><p data-contract="pickup-brief">{{ pickup_brief }}</p>
+      {% endif %}
+      <p>{{ revised_result }}</p>
     </section>
 
     <section id="subtitles">

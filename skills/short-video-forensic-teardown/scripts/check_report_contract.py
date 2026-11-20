@@ -9,6 +9,8 @@ import sys
 from html.parser import HTMLParser
 from pathlib import Path
 
+from edit_plan_contract import edit_plan_errors
+
 
 REQUIRED_TERMS = [
     "源流质量诊断",
@@ -223,6 +225,7 @@ def main() -> int:
         failures.append("missing fixed score dimensions: " + ", ".join(missing_score_dimensions))
 
     if not args.legacy:
+        failures.extend(edit_plan_errors(html, html_path.parent))
         for marker in ["shot", "highlight-line", "good-card", "bad-card"]:
             found = marker_counts[marker]
             expected = minimums[marker]

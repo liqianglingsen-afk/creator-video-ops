@@ -1,6 +1,6 @@
 # Short Video Score Rubric
 
-Use this 100-point rubric by default for every Chinese video teardown. Every score must be backed by concrete evidence: timestamp, frame/screenshot, subtitle line, transcript line, page caption, media probe output, or file metadata.
+Keep this historical rubric only when revisiting an existing report that used it. For new teardowns, follow the [current ten-dimension rubric](../../short-video-forensic-teardown/references/score-rubric.md) and [existing-footage edit plan](../../short-video-forensic-teardown/references/edit-plan.md), with a minimum optimization target of 85/100. Every score must be backed by concrete evidence: timestamp, frame/screenshot, subtitle line, transcript line, page caption, media probe output, or file metadata.
 
 ## Dimensions
 

@@ -11,7 +11,8 @@ The rubric is intentionally stable across video types. Product launches, brand f
 - Do not give full credit for a dimension that was not verified.
 - Do not silently change weights for different video categories.
 - If evidence is missing or partial, apply the cap rules below.
-- Include current score, target score after optimization, and priority lift order.
+- The ten existing maximums sum to **98**. Apply dimension caps in raw points, convert with `sum(raw points) × 100 / 98`, then apply any overall cap on the percentage scale. Use the unrounded capped score for the threshold; display one decimal and the raw sum. For example, 83/98 is 84.7/100 and falls short; 83.5/98 is 85.2/100 and clears 85.
+- Minimum optimization goal **85/100**. Respect higher goals. Show baseline, goal, and the evidence-backed rescore on the actual export in separate fields. A forecast is optional, clearly labeled, and may fall below the goal. Preserve higher-scoring originals; do not accept a regression solely because it clears the floor.
 
 ## Fixed Dimensions
 
