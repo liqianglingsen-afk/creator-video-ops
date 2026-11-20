@@ -1,5 +1,8 @@
 # Standard 100-Point Short Video Score Rubric
 
+涉及优化建议或改后复评，采用 [0.4.0 全片方案与对照验收](full-revision.md) 的预测、保留资产、版位与报告约定。历史报告沿用生成时的口径。
+
+
 Use this fixed rubric for every Chinese short-video forensic teardown unless the user provides a different explicit scoring system.
 
 The rubric is intentionally stable across video types. Product launches, brand films, travel notes, oral explainers, course ads, and creator vlogs all use the same weights. The video category changes the evidence interpretation, not the scoring standard.

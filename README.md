@@ -31,6 +31,10 @@
 
 传播审片、封面双轴评分、真实选帧与多画幅封面生成、同素材挑战剪辑、发布数据导入和校准方法见[新版操作约定](skills/short-video-forensic-teardown/references/editorial-review.md)。封面工具需 Pillow 和本地字体，跨工具审片需 Framecheck 0.3+。
 
+## 0.4.0 全片修改与复评
+
+优化前交付逐项预测与完整剪辑单，修改后交付相同量表的原改对照、品牌资产保留情况和版位 UI 校样。操作及依赖见[全片修改与原改复评](skills/short-video-forensic-teardown/references/full-revision.md)。需要 Framecheck 0.4+；旧单片报告继续可读。
+
 ## 依赖
 
 - Python 3.10+

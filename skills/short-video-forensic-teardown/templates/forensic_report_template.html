@@ -324,6 +324,7 @@
 
     <section id="edit-plan">
       <h2>现有素材剪辑单</h2>
+      {% if revision_report %}<p><a data-contract="revision-report" href="{{ revision_report }}">查看全片方案或原改对照复评</a></p>{% endif %}
       <p>处理方式　<strong data-contract="edit-route">{{ edit_route }}</strong></p>
       <p>{{ edit_basis }}</p>
       {% if edit_steps %}

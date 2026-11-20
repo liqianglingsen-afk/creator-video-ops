@@ -1,5 +1,8 @@
 # Forensic Output Contract
 
+涉及优化建议或改后复评，采用 [0.4.0 全片方案与对照验收](full-revision.md) 的预测、保留资产、版位与报告约定。历史报告沿用生成时的口径。
+
+
 Use this contract for every Chinese short-video teardown unless the user explicitly asks for a lighter text-only answer.
 
 The report is a forensic artifact, not a generic opinion article. It must be frame-evidenced, timestamped, score-standardized, and beginner-operable.

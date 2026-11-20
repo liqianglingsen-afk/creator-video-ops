@@ -12,6 +12,7 @@ from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
+from revision_contract import revision_check
 from edit_plan_contract import WEIGHTS, edit_plan_errors
 
 
@@ -223,6 +224,7 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description="Validate a short-video teardown HTML report.")
     parser.add_argument("report", help="Path to the HTML report.")
+    parser.add_argument("--revision-stage",choices=("plan","comparison"),help="Validate a v0.4 plan or paired review and its evidence.")
     parser.add_argument("--require-editorial", action="store_true", help="Validate v0.3 editorial decisions and linked evidence.")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--require-current-rubric", action="store_true",
@@ -243,6 +245,17 @@ def main() -> int:
     if not html_path.exists():
         print(f"FAIL: file not found: {html_path}")
         return 1
+
+    if args.revision_stage:
+        if args.legacy:
+            parser.error("新版方案或复评不能使用旧报告的宽松校验")
+        try:
+            if revision_check(html_path,args.revision_stage):
+                print("PASS: verified "+args.revision_stage+" packet")
+                return 0
+        except (ValueError, OSError, KeyError, TypeError) as exc:
+            print("FAIL: "+str(exc))
+            return 1
 
     html = html_path.read_text(encoding="utf-8", errors="replace")
     visible = strip_html(html)

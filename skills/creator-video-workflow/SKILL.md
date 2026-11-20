@@ -7,6 +7,10 @@ description: Orchestrate an end-to-end Chinese creator-video workflow from publi
 
 Coordinate the existing specialist Skills. Do not reimplement their detailed analysis rules in this file.
 
+## 全片修改及标准复评 · 0.4.0
+
+给优化建议时，按[全片修改与复评](../short-video-forensic-teardown/references/full-revision.md)建立包含逐项预测、全时间线与保护资产的剪前快照。执行“按方案修改”时沿用已确认快照，交独立导出、包装三项、版位校样及标准原改对照 HTML/JSON；仅有单片技术报告不能结案。已有原片和改片但无预测记录时，走历史回放。仅技术检测沿用单片或批量入口。
+
 ## Route the Request
 
 - Full reference-to-QA workflow: follow all available stages below.
