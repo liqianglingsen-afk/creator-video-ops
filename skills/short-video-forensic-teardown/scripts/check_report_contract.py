@@ -4,12 +4,15 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from html.parser import HTMLParser
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
-from edit_plan_contract import edit_plan_errors
+from edit_plan_contract import WEIGHTS, edit_plan_errors
 
 
 REQUIRED_TERMS = [
@@ -58,19 +61,6 @@ LEGACY_REQUIRED_TERMS = [
     "字号",
     "剪映",
     "小白",
-]
-
-REQUIRED_SCORE_DIMENSIONS = [
-    "前3秒语言心理钩子",
-    "选题/标题/封面承诺",
-    "脚本结构与信息递进",
-    "高光句音画同步",
-    "视觉画面与审美",
-    "拍摄与运镜",
-    "剪辑节奏与留存",
-    "字幕与包装",
-    "证据链与可信度",
-    "转化/关注/评论引导",
 ]
 
 STRICT_MINIMUMS = {
@@ -161,6 +151,71 @@ def source_section_has_video_link(html: str) -> bool:
     return has_label and has_reference
 
 
+class EditorialFields(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.links = {}
+        self.counts = {}
+        self.visible = {}
+        self.active = None
+
+    def handle_starttag(self, tag, attrs):
+        attr = dict(attrs)
+        name = attr.get("data-contract")
+        names = {"editorial-goal", "hook-payoff", "action-path", "revision-priorities", "preserve-shots",
+                 "editorial-json", "editorial-report", "editorial-pending", "current-score", "raw-score"}
+        if name in names:
+            self.counts[name] = self.counts.get(name, 0) + 1
+            self.visible[name] = ""
+            self.active = (name, tag)
+            if tag == "a":
+                self.links[name] = attr.get("href") or ""
+
+    def handle_data(self, data):
+        if self.active:
+            self.visible[self.active[0]] += data
+
+    def handle_endtag(self, tag):
+        if self.active and tag == self.active[1]:
+            self.active = None
+
+
+def editorial_errors(html, directory):
+    data = EditorialFields()
+    data.feed(html)
+    errors = []
+    for key in ("editorial-goal", "hook-payoff", "action-path", "revision-priorities", "preserve-shots"):
+        if not data.visible.get(key, "").strip():
+            errors.append("missing editorial field: " + key)
+    if any(n > 1 for n in data.counts.values()):
+        errors.append("duplicate editorial fields")
+    if data.visible.get("editorial-pending", "").strip() and not data.links:
+        return errors
+    companion_hash = None
+    for name in ("editorial-report", "editorial-json"):
+        link = urlsplit(data.links.get(name, ""))
+        path = directory / unquote(link.path)
+        if link.scheme or link.netloc or not path.is_file():
+            errors.append("missing local review artifact: " + name)
+        elif name == "editorial-report":
+            match = re.search(r'data-source-sha256="([0-9a-f]{64})"', path.read_text(encoding="utf-8"))
+            companion_hash = match.group(1) if match else None
+        elif name == "editorial-json":
+            try:
+                record = json.loads(path.read_text(encoding="utf-8"))["editorial"]
+                if record["schema_version"] != "editorial-0.3" or not record["status"] or len(record["checks"]) != 8:
+                    errors.append("incomplete editorial review")
+                if record.get("source_sha256") != companion_hash:
+                    errors.append("editorial HTML and JSON use different sources")
+                if record.get("content"):
+                    for field, key in (("current-score","total"), ("raw-score","raw")):
+                        if Decimal(data.visible[field].strip()) != Decimal(record["content"][key]):
+                            errors.append("editorial content score mismatch: " + field)
+            except (ValueError, InvalidOperation, KeyError, TypeError):
+                errors.append("invalid editorial JSON")
+    return errors
+
+
 def main() -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -168,7 +223,11 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description="Validate a short-video teardown HTML report.")
     parser.add_argument("report", help="Path to the HTML report.")
-    parser.add_argument(
+    parser.add_argument("--require-editorial", action="store_true", help="Validate v0.3 editorial decisions and linked evidence.")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--require-current-rubric", action="store_true",
+                      help="Require a versioned direct-100 score table for a new report.")
+    mode.add_argument(
         "--legacy",
         action="store_true",
         help="Use a lighter compatibility check for pre-upgrade reports.",
@@ -211,7 +270,7 @@ def main() -> int:
         "bad-card": count_contract_marker(html, "bad-card"),
     }
 
-    failures: list[str] = []
+    failures: list[str] = editorial_errors(html, html_path.parent) if args.require_editorial else []
     if missing_terms:
         failures.append("missing required terms: " + ", ".join(missing_terms))
     if broken_images:
@@ -220,12 +279,12 @@ def main() -> int:
     if local_images < minimums["local_images"]:
         failures.append(f"expected at least {minimums['local_images']} local evidence images, found {local_images}")
 
-    missing_score_dimensions = [dimension for dimension in REQUIRED_SCORE_DIMENSIONS if dimension not in visible]
+    missing_score_dimensions = [dimension for dimension in WEIGHTS if dimension not in visible]
     if not args.legacy and missing_score_dimensions:
         failures.append("missing fixed score dimensions: " + ", ".join(missing_score_dimensions))
 
     if not args.legacy:
-        failures.extend(edit_plan_errors(html, html_path.parent))
+        failures.extend(edit_plan_errors(html, html_path.parent, require_current=args.require_current_rubric))
         for marker in ["shot", "highlight-line", "good-card", "bad-card"]:
             found = marker_counts[marker]
             expected = minimums[marker]
@@ -252,7 +311,7 @@ def main() -> int:
     print(f"- required terms present: {len(required_terms)}")
     print(f"- local evidence images: {local_images}")
     if not args.legacy:
-        print(f"- fixed score dimensions present: {len(REQUIRED_SCORE_DIMENSIONS)}")
+        print(f"- fixed score dimensions present: {len(WEIGHTS)}")
         for marker, count in marker_counts.items():
             print(f"- {marker}: {count}")
     return 0

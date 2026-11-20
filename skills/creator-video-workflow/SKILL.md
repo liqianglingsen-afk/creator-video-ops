@@ -42,6 +42,12 @@ Convert findings into a priority-ordered execution list:
 
 Use the [edit-plan contract](../short-video-forensic-teardown/references/edit-plan.md). Set a minimum of 85/100, choose a higher brief when applicable, and build a source-to-output cut list Codex can execute. Render and inspect a new file when asked to optimize. Specify new content only for a demonstrated gap after examining available material or reviewing a trial cut.
 
+## 传播评分与修改排序 · v0.3.0
+
+短视频评分、拆解及优化共用[传播与美学审片约定](../short-video-forensic-teardown/references/editorial-review.md)。先核目标受众、入口、前三秒承诺及兑现、结尾收益与真实承接，检查哪些镜头必须保留。按事实问题、目标瓶颈、证据和成本选 1–3 项。前台分别显示十维内容分、后期技术分、封面双轴分和发布前问题。按委托制作首选与挑战剪法或封面，复核手机预览与实际导出。单纯评分保留原片。
+
+使用 Framecheck 0.3+ 的 `postscore brief` 创建底稿并由 Codex 依据实际审片填写，再用 `review --editorial` 或 `batch --editorial-dir` 生成报告。初次裸跑技术检查时传播判断待核。纯技术任务可直接交付；用户问传播/转化或综合评分时继续完成可验证的创意审片，包含内容百分制及封面证据。缺真实发布封面或转化组件时写待核，按当前素材提出候选。需要成交、关注或回访数据时用可选的 metrics_csv 导入。
+
 ## Stage 5: Review the Revised Final Video
 
 When a revised video exists, invoke `postproduction-review` with the most relevant preset. For multiple files or a folder, use batch mode. Rescore content against the same ten dimensions and evidence caps when content is in scope. Report content and technical QA separately, with exact file, baseline, target and revised score for each. If either requested check falls short, revise recoverable cuts or document the remaining evidence and the minimum pickup. Link the cut, execution file, reports and outstanding items.

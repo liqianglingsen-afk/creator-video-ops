@@ -24,6 +24,7 @@ The report is a forensic artifact, not a generic opinion article. It must be fra
    - Biggest growth blocker.
    - Highest-leverage fix.
    - Score band interpretation.
+   - Include the editorial decision section from the template: goal, entry, hook payoff, CTA benefit and destination, evidence-led priorities and preserved shots. Link the matched Framecheck JSON and HTML, or document partial review when unavailable. See `editorial-review.md` for cover and experiment requirements.
 
 3. `前3秒语言心理钩子`
    - 0-1s, 1-2s, 2-3s breakdown.
@@ -36,7 +37,7 @@ The report is a forensic artifact, not a generic opinion article. It must be fra
    - Use the fixed 100-point rubric in `score-rubric.md`.
    - Include all 10 fixed dimensions and their scores.
    - Include evidence for every deduction.
-   - Show raw sum / 98, normalized current score / 100, optimization target ≥85, cap evidence and the priority order. See `edit-plan.md` for required HTML fields, including the cut list and fallback branch.
+   - Show the rubric version, ten scored rows, their sum / 100, the exact current score after any documented cap, the target ≥85 and the priority order. See `edit-plan.md` for required HTML fields, including the cut list and fallback branch.
    - Do not change scoring weights by video category.
 
 5. `脚本结构与留存`

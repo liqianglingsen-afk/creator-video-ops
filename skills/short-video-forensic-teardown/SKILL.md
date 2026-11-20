@@ -19,10 +19,13 @@ If the user explicitly invokes `viral-video-deep-dive`, still use this workflow 
 - Good parts get 1:1 beginner replication cards.
 - Bad parts get optimized replacement cards, not replication cards, unless the user explicitly asks to fully replicate the whole video.
 - Prioritize runnable Codex operations. Include concrete timeline parameters that also transfer to 剪映/CapCut; give manual steps when a particular operation requires the editor.
-- Set the minimum short-video optimization target to **85/100** (honor a higher brief). Keep all ten weights: they sum to 98; compare the unrounded normalized score to the target.
+- Set the minimum short-video optimization target to **85/100** (honor a higher brief). Use the ten weights in `score-rubric.md` (creative-100-v1), which sum directly to 100. Compare the exact capped sum to the target. Regrade both cuts on the same rubric for a before/after comparison.
 - Build the existing-footage cut first using [the edit-plan contract](references/edit-plan.md). If asked to optimize, render a separate cut with Codex and rescore it. If only asked for analysis, deliver the runnable plan. Escalate to new content only for a documented gap.
 - Use the fixed HTML framework template, but adapt CSS variables to the current video's extracted style profile.
 - Measure or explicitly estimate subtitle rendered size and bottom safe area from frames when visual evidence is available.
+
+- Follow [传播、美学与剪辑决策](references/editorial-review.md) for hook, CTA, cover, and creative or commercial review. Rank 1–3 edits for the actual goal; preserve convincing shots and disclose every release blocker.
+- Score a supplied cover on its own two axes. For optimization use the cover and cut variant renderers, review phone previews, and keep the original as control. Record unavailable traffic or an unverified destination explicitly.
 
 ## Required References
 
@@ -133,7 +136,7 @@ python "<skill-dir>/scripts/extract_style_profile.py" "<frames-dir>" -o "<style-
    - Run:
 
 ```bash
-python "<skill-dir>/scripts/check_report_contract.py" "<html-path>"
+python "<skill-dir>/scripts/check_report_contract.py" "<html-path>" --require-current-rubric --require-editorial
 ```
 
    - Run:

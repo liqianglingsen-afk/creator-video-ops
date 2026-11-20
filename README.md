@@ -27,7 +27,9 @@
 
 如果用户只要求拆解、字幕建议或成片评分，总控 Skill 会直接进入对应阶段，不强制跑完整流水线。
 
-短视频优化最低目标为 85/100。分析任务交付带源片与成片时码、执行参数及验收条件的剪辑单；执行任务优先用现有素材导出新版本。内容拆解和后期技术分分别复评。仅在素材有明确缺口时附最小补拍方案。详见[剪辑与复评约定](skills/short-video-forensic-teardown/references/edit-plan.md)。
+0.3.0 的十项内容权重直接相加为 100 分。新旧版本比较需按同一量表重评两份成片。短视频优化最低目标为 85/100。分析任务交付带源片与成片时码、执行参数及验收条件的剪辑单；执行任务优先用现有素材导出新版本。内容拆解和后期技术分分别复评。仅在素材有明确缺口时附最小补拍方案。详见[剪辑与复评约定](skills/short-video-forensic-teardown/references/edit-plan.md)。
+
+传播审片、封面双轴评分、真实选帧与多画幅封面生成、同素材挑战剪辑、发布数据导入和校准方法见[新版操作约定](skills/short-video-forensic-teardown/references/editorial-review.md)。封面工具需 Pillow 和本地字体，跨工具审片需 Framecheck 0.3+。
 
 ## 依赖
 

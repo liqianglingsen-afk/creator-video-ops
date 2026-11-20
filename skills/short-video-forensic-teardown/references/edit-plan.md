@@ -21,4 +21,4 @@ ffmpeg -n -i input.mp4 -filter_complex "[0:v]trim=end=2,setpts=PTS-STARTPTS[v0];
 
 ## HTML 约定
 
-沿用模板的可见数值与剪辑表。用 `data-contract="optimization-target"` 标记纯数字目标，用 `data-contract="raw-score"` 标记原始分子，`data-contract="current-score"` 标记换算并应用封顶后的当前分（证据不足可写“待核”）。`edit-route` 取“试剪现有素材”“需补充素材”“当前版本已达标”或“证据不足待核”。每个 `tr[data-contract="edit-step"]` 依次给五个非空单元格：源素材与时码、成片位置、执行操作与参数、对应扣分、验收。用 `edit-execution` 标记可运行命令或有效本地脚本/工程链接。走补素材分支须填 `edit-limit`（剪辑为何不足）及 `pickup-brief`（具体补拍单）。可保留的原版或证据不足时说明依据，不虚构操作。
+沿用模板的可见数值与剪辑表。新报告标明 `rubric-version` 为 `creative-100-v1`，十行 `score-row` 依次填写维度、权重、实得分、依据与修改优先级。权重和实得分使用纯数值。用 `data-contract="optimization-target"` 标记目标，`raw-score` 标记已按单项上限计分的十项合计，`current-score` 标记再应用总分封顶后的精确值。有总分封顶时填写 `overall-cap` 及原因。证据不足以出分时相应分项、合计和当前分写“待核”。旧版报告沿用原分母。`edit-route` 取“试剪现有素材”“需补充素材”“当前版本已达标”或“证据不足待核”。每个 `tr[data-contract="edit-step"]` 依次给五个非空单元格：源素材与时码、成片位置、执行操作与参数、对应扣分、验收。用 `edit-execution` 标记可运行命令或有效本地脚本/工程链接。走补素材分支须填 `edit-limit`（剪辑为何不足）及 `pickup-brief`（具体补拍单）。可保留的原版或证据不足时说明依据，不虚构操作。

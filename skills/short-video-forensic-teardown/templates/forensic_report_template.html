@@ -218,6 +218,18 @@
       </div>
     </section>
 
+    <section id="editorial">
+      <h2>传播与美学决策</h2>
+      <p>受众、入口与目标　<span data-contract="editorial-goal">{{ editorial_goal }}</span></p>
+      <p>前三秒与兑现时码　<span data-contract="hook-payoff">{{ hook_payoff }}</span></p>
+      <p>结尾收益与行动承接　<span data-contract="action-path">{{ action_path }}</span></p>
+      <p>优先修改　<span data-contract="revision-priorities">{{ revision_priorities }}</span></p>
+      <p>应保留的镜头　<span data-contract="preserve-shots">{{ preserve_shots }}</span></p>
+      {% if editorial_json and editorial_report %}
+      <p><a data-contract="editorial-json" href="{{ editorial_json }}">审片数据</a> · <a data-contract="editorial-report" href="{{ editorial_report }}">传播、美学、封面与后期复核</a></p>
+      {% else %}<p data-contract="editorial-pending">{{ editorial_pending }}</p>{% endif %}
+    </section>
+
     <section id="hook">
       <h2>前3秒语言心理钩子</h2>
       <table>
@@ -233,7 +245,7 @@
     <section id="score">
       <h2>综合评分体系</h2>
       <div class="summary-grid">
-        <div class="panel"><div class="muted">当前总分</div><div class="metric" data-contract="current-score">{{ current_score }}</div><small>原始分 <span data-contract="raw-score">{{ raw_score }}</span> / 98</small></div>
+        <div class="panel"><div class="muted">当前内容分 / 100</div><div class="metric" data-contract="current-score">{{ current_score }}</div><small>十项合计 <span data-contract="raw-score">{{ raw_score }}</span> / 100 · 量表 <span data-contract="rubric-version">creative-100-v1</span></small>{% if overall_cap is defined and overall_cap is not none %}<p>总分上限 <span data-contract="overall-cap">{{ overall_cap }}</span> · <span data-contract="cap-reason">{{ cap_reason }}</span></p>{% endif %}</div>
         <div class="panel"><div class="muted">目标总分</div><div class="metric" data-contract="optimization-target">{{ target_score | default(85) }}</div></div>
         <div class="panel"><div class="muted">分段解释</div><p>{{ score_band }}</p></div>
       </div>
@@ -241,7 +253,7 @@
         <thead><tr><th>维度</th><th>权重</th><th>得分</th><th>扣分证据</th><th>提分优先级</th></tr></thead>
         <tbody>
           {% for row in score_rows %}
-          <tr><td>{{ row.dimension }}</td><td>{{ row.weight }}</td><td>{{ row.score }}</td><td>{{ row.evidence }}</td><td>{{ row.priority }}</td></tr>
+          <tr data-contract="score-row"><td>{{ row.dimension }}</td><td>{{ row.weight }}</td><td>{{ row.score }}</td><td>{{ row.evidence }}</td><td>{{ row.priority }}</td></tr>
           {% endfor %}
         </tbody>
       </table>

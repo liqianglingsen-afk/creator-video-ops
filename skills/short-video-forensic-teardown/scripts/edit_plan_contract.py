@@ -9,7 +9,20 @@ from urllib.parse import unquote, urlsplit
 
 
 FIELDS = {"optimization-target", "raw-score", "current-score", "edit-route", "edit-execution",
-          "edit-limit", "pickup-brief"}
+          "edit-limit", "pickup-brief", "rubric-version", "overall-cap", "cap-reason"}
+CURRENT_RUBRIC = "creative-100-v1"
+WEIGHTS = {
+    "前3秒语言心理钩子": 17,
+    "选题/标题/封面承诺": 10,
+    "脚本结构与信息递进": 12,
+    "高光句音画同步": 8,
+    "视觉画面与审美": 10,
+    "拍摄与运镜": 6,
+    "剪辑节奏与留存": 10,
+    "字幕与包装": 8,
+    "证据链与可信度": 9,
+    "转化/关注/评论引导": 10,
+}
 ROUTES = {"试剪现有素材", "需补充素材", "当前版本已达标", "证据不足待核"}
 
 
@@ -19,10 +32,12 @@ class EditPlanParser(HTMLParser):
         self.fields: dict[str, str] = {}
         self.duplicates: set[str] = set()
         self.rows: list[list[str]] = []
+        self.score_rows: list[list[str]] = []
         self.links: list[str] = []
         self.field = self.field_tag = ""
         self.nested = 0
-        self.in_row = self.in_cell = False
+        self.active_row: list[str] | None = None
+        self.in_cell = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         data = dict(attrs)
@@ -34,11 +49,12 @@ class EditPlanParser(HTMLParser):
             self.fields[marker] = ""
         elif self.field and tag == self.field_tag:
             self.nested += 1
-        if tag == "tr" and marker == "edit-step":
-            self.rows.append([])
-            self.in_row = True
-        if self.in_row and tag == "td":
-            self.rows[-1].append("")
+        if tag == "tr" and marker in {"edit-step", "score-row"}:
+            self.active_row = []
+            rows = self.rows if marker == "edit-step" else self.score_rows
+            rows.append(self.active_row)
+        if self.active_row is not None and tag == "td":
+            self.active_row.append("")
             self.in_cell = True
         if self.field == "edit-execution" and tag == "a":
             self.links.append(data.get("href") or "")
@@ -51,13 +67,14 @@ class EditPlanParser(HTMLParser):
         if tag == "td":
             self.in_cell = False
         if tag == "tr":
-            self.in_row = self.in_cell = False
+            self.active_row = None
+            self.in_cell = False
 
     def handle_data(self, data: str) -> None:
         if self.field:
             self.fields[self.field] += data
-        if self.in_cell:
-            self.rows[-1][-1] += data
+        if self.in_cell and self.active_row is not None:
+            self.active_row[-1] += data
 
 
 def number_in(text: str, maximum: int) -> Decimal | None:
@@ -70,7 +87,46 @@ def number_in(text: str, maximum: int) -> Decimal | None:
     return None
 
 
-def edit_plan_errors(html: str, directory: Path) -> list[str]:
+def direct_score_errors(rows: list[list[str]], fields: dict[str, str],
+                        raw: Decimal | None, current: Decimal | None, pending: bool) -> list[str]:
+    errors = []
+    seen: set[str] = set()
+    total = Decimal(0)
+    has_unknown = False
+    for row in rows:
+        if len(row) < 3:
+            errors.append("score-row requires dimension, weight and score")
+            continue
+        name, weight, score = (cell.strip() for cell in row[:3])
+        if name in seen or name not in WEIGHTS:
+            errors.append("duplicate or unknown score dimension: " + name)
+            continue
+        seen.add(name)
+        if number_in(weight, 100) != WEIGHTS[name]:
+            errors.append("incorrect weight: " + name)
+        value = number_in(score, WEIGHTS[name])
+        if value is None:
+            has_unknown = True
+            if not (pending and score == "待核"):
+                errors.append("invalid dimension score: " + name)
+        else:
+            total += value
+    if WEIGHTS.keys() != seen:
+        errors.append("score table requires all ten fixed dimensions")
+    if has_unknown:
+        if raw is not None or current is not None:
+            errors.append("incomplete score table cannot have a numeric total")
+    elif raw != total:
+        errors.append("raw-score must equal the ten dimension scores")
+    cap = number_in(fields.get("overall-cap", "100"), 100)
+    if cap is None or ("overall-cap" in fields and not fields.get("cap-reason")):
+        errors.append("overall-cap requires a valid number and a reason")
+    if cap is not None and raw is not None and current != min(raw, cap):
+        errors.append("current-score must equal the exact capped total")
+    return errors
+
+
+def edit_plan_errors(html: str, directory: Path, *, require_current: bool = False) -> list[str]:
     parser = EditPlanParser()
     parser.feed(html)
     fields = {name: value.strip() for name, value in parser.fields.items()}
@@ -81,15 +137,21 @@ def edit_plan_errors(html: str, directory: Path) -> list[str]:
     route = fields.get("edit-route", "")
     if route not in ROUTES:
         errors.append("missing or invalid edit-route")
-    raw = number_in(fields.get("raw-score", ""), 98)
+    version = fields.get("rubric-version")
+    direct = version == CURRENT_RUBRIC
+    if not direct and (require_current or version is not None or parser.score_rows):
+        errors.append("missing or unsupported rubric-version")
+    raw = number_in(fields.get("raw-score", ""), 100 if direct else 98)
     current = number_in(fields.get("current-score", ""), 100)
     pending = route == "证据不足待核"
     for name, value in [("raw-score", raw), ("current-score", current)]:
         if value is None and not (pending and fields.get(name) == "待核"):
             errors.append(f"missing or invalid {name}")
+    if direct:
+        errors.extend(direct_score_errors(parser.score_rows, fields, raw, current, pending))
     if raw is not None and current is not None:
-        percentage = raw * 100 / 98
-        if current > percentage + Decimal("0.05"):
+        percentage = raw if direct else raw * 100 / 98
+        if not direct and current > percentage + Decimal("0.05"):
             errors.append("current-score exceeds normalized raw-score")
         if route == "当前版本已达标" and target is not None and min(percentage, current) < target:
             errors.append("current version falls below the optimization target")
