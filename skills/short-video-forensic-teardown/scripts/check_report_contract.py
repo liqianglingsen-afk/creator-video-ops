@@ -243,6 +243,7 @@ def main() -> int:
     parser.add_argument("--revision-stage",choices=("plan","comparison"),help="Validate a v0.4 plan or paired review and its evidence.")
     parser.add_argument("--require-editorial", action="store_true", help="Validate v0.3 editorial decisions and linked evidence.")
     parser.add_argument("--require-v05", action="store_true", help="核对新版评分、封面来源和首页发布结论")
+    parser.add_argument("--require-v06", action="store_true",help="校验 0.6 同源报告及可见分项")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--require-current-rubric", action="store_true",
                       help="Require a versioned direct-100 score table for a new report.")
@@ -263,6 +264,47 @@ def main() -> int:
         print(f"FAIL: file not found: {html_path}")
         return 1
 
+    if not any((args.require_v05,args.require_v06,args.legacy)):
+        sidecar = html_path.with_suffix(".json")
+        if sidecar.is_file():
+            try:
+                data = json.loads(sidecar.read_text(encoding="utf-8"))
+                args.require_v06 = ((data.get("editorial") or {}).get("schema_version") == "editorial-0.6"
+                                    or data.get("schema_version") == "revision-0.6")
+                if args.require_v06 and data.get("kind") in {"plan","comparison"}:
+                    args.revision_stage = args.revision_stage or data["kind"]
+            except (ValueError,OSError,AttributeError):
+                pass
+    if args.require_v06:
+        try:
+            if args.revision_stage:
+                if not revision_check(html_path,args.revision_stage,current=True,version="revision-0.6"):
+                    raise ValueError("请提交实际标准方案或复评页")
+            else:
+                from postscore.models import ReviewReport
+                from postscore.report import render_html
+                from postscore.editorial import Creative
+                record = ReviewReport.model_validate_json(html_path.with_suffix(".json").read_text(encoding="utf-8"))
+                ed = record.editorial or {}
+                if ed.get("schema_version") != "editorial-0.6" or not ed.get("brief"):
+                    raise ValueError("须提供当前同名 0.6 简报与报告")
+                if ed.get("content"):
+                    c = ed["content"]
+                    obj = Creative.model_validate({k:v for k,v in c.items() if k in Creative.model_fields})
+                    if obj.result(c["target"]) != c or obj.version != "creative-100-v2":
+                        raise ValueError("评分分项、证据或合计不一致")
+                actual = html_path.read_text(encoding="utf-8")
+                if actual != render_html(record,html_path.parent):
+                    raise ValueError("报告显示与同源证据、分数或方案不一致，请从 JSON 重出")
+                images = ImageParser()
+                images.feed(actual)
+                if any(not resolve_image_path(html_path,s).is_file() for s in images.srcs if not is_external_src(s)):
+                    raise ValueError("缺本地证据图")
+            print("PASS: 0.6 同源报告")
+            return 0
+        except (ImportError,ValueError,OSError,KeyError,TypeError) as exc:
+            print("FAIL: "+str(exc))
+            return 1
     if args.revision_stage:
         if args.legacy:
             parser.error("新版方案或复评不能使用旧报告的宽松校验")

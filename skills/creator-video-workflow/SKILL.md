@@ -7,9 +7,9 @@ description: Orchestrate an end-to-end Chinese creator-video workflow from publi
 
 Coordinate the existing specialist Skills. Do not reimplement their detailed analysis rules in this file.
 
-## 0.5.0 综合评分与改片复核
+## v0.6.0 任务与证据
 
-用 Framecheck 0.5+ 的 brief 与 review，依照[证据字段和验收](../short-video-forensic-teardown/references/creative-evidence.md)填写主任务、封面来源、四项钩子、资产分轨及屏显，区分编辑判断与后台数据。综合拆解、改片复评均走新入口。仅技术检测可单独运行；旧报告继续按其生成口径解读。
+用 Framecheck 0.6 的 brief、review 或 batch，按[委托与证据约定](../short-video-forensic-teardown/references/creative-evidence.md)冻结受众、入口、声音和时长。纯技术检查可单独指定 --audio-intent；全片单帧异常排查加 --full-frame-scan 并回看候选。输出内容／按简报技术／封面／发布状态。镜头、缺陷和行动设计按片子真实任务取舍。缺已核分项输出部分报告。全片方案和原改对照采用同一底稿。
 
 ## 全片修改及标准复评
 
@@ -52,9 +52,9 @@ Use the [edit-plan contract](../short-video-forensic-teardown/references/edit-pl
 
 ## 传播评分与修改排序 · v0.3.0
 
-短视频评分、拆解及优化共用[传播与美学审片约定](../short-video-forensic-teardown/references/editorial-review.md)。先核目标受众、入口、前三秒承诺及兑现、结尾收益与真实承接，检查哪些镜头必须保留。按事实问题、目标瓶颈、证据和成本选 1–3 项。前台分别显示十维内容分、后期技术分、封面双轴分和发布前问题。按委托制作首选与挑战剪法或封面，复核手机预览与实际导出。单纯评分保留原片。
+短视频评分、拆解及优化共用[传播与美学审片约定](../short-video-forensic-teardown/references/editorial-review.md)。先核目标受众、入口、前三秒承诺及兑现、结尾收益与真实承接，检查哪些镜头必须保留。按事实问题、目标瓶颈、证据和成本选 0–3 项。前台分别显示十维内容分、后期技术分、封面双轴分和发布前问题。按委托制作首选与挑战剪法或封面，复核手机预览与实际导出。单纯评分保留原片。
 
-使用 Framecheck 0.3+ 的 `postscore brief` 创建底稿并由 Codex 依据实际审片填写，再用 `review --editorial` 或 `batch --editorial-dir` 生成报告。初次裸跑技术检查时传播判断待核。纯技术任务可直接交付；用户问传播/转化或综合评分时继续完成可验证的创意审片，包含内容百分制及封面证据。缺真实发布封面或转化组件时写待核，按当前素材提出候选。需要成交、关注或回访数据时用可选的 metrics_csv 导入。
+使用 Framecheck 0.6+ 的 `postscore brief` 创建底稿并由 Codex 依据实际审片填写，再用 `review --editorial` 或 `batch --editorial-dir` 生成报告。初次裸跑技术检查时传播判断待核。纯技术任务可直接交付；用户问传播/转化或综合评分时继续完成可验证的创意审片，包含内容百分制及封面证据。区分未提供、确认无独立封面与组件待核，按适用入口提出候选。需要成交、关注或回访数据时用可选的 metrics_csv 导入。
 
 ## Stage 5: Review the Revised Final Video
 

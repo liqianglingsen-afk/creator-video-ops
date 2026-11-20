@@ -1,29 +1,18 @@
-# 封面、前三秒与镜头取舍 · 0.5
+# 委托与证据 · editorial-0.6
 
-从原视频执行 `postscore brief input.mp4 --output notes.json`。填完八个环节、十维内容分、封面图与本页的 criteria 后，执行 `postscore review input.mp4 --preset short_social --editorial notes.json --json --html --output-dir review`。审片人对画面事实负责。评分器复算分项、检查矛盾、汇总发布阻碍。纯技术检查直接用 review。历史稿保留原分和原 schema。
+在 brief 内冻结 commission、entry_type、audio_intent、action_required、purpose、target_duration、placements、constraints、shot_style 和 color_style。外层 audience、goal、entry 是简报的一部分。若要求保留时长，填写“保持原时长”。原改两次使用同一任务及适用项。后台表现另录真实数据。单项“0”须有观察依据，“待核”列缺什么，特别注明已确认不存在的独立封面与平台实显未知。
 
-## 先确认要观众记住什么
+每个实际镜头在 criteria.shots 写 start/end（源秒数）、purpose、evidence、events。一个长镜头可有多个事件。必要时写 framing、motion、sound、graphics、replication 说明声画和可执行复刻。素材完整覆盖原片，可零台词、零问题。对重要判断注明帧、原声或转写。按需测量字体、对比度、层级、阅读时间、视觉焦点和手机缩略可读性。相同帧重复引用仍是一份证据。
 
-goal 写商业目标，criteria.primary_task 写影片要介绍或证明什么，secondary_angle 写辅助切口，reveal_order 写对象首次出现和后续展示的顺序。先确定观看入口、受众和主动作。围绕主任务登记有独特价值的镜头，包括产品体量、结构或材质、品牌、使用过程、可信结果与动态收束。生活方式片按其真实叙事资产登记。
+hook 四项上限为 4/4/5/4，各填 score、evidence、time（源秒数，小于 3 及实际时长）。继续看理由和本窗口内的可信线索分别打分。payoff 写兑现位置。高分起点 14；其中看下去的理由至少 4，可信线索至少 3。允许有意识地保留谜底。弱开场要优化时给两个实质不同的动机、真实素材位置及具体剪法，一个保留原有叙事优势。每案记录 motive、beats、next_shot，beat 写成片 start/end、subject、picture、audio、caption；按实际节拍分段。无声或无字时如实写明。
 
-## 封面
+发布封面、独立稿、首帧和设计候选分别登记。列表入口缺图、弱封面或专门委托时以不同点击理由提出两案。按传播与美学各 50 分，检查主体、具体利益点、标题与正文是否兑现、关键裁切。无字看视觉层级，无品牌要求看作品辨识度。设计应注明取帧、标题、焦点、构图、位置和失败条件，用 cover_variants.py 从可编辑 JSON 生成 A/B 实图与 180px 模拟预览，再核对目标版位。自动播放任务优先评价第一幅画面，无需凑列表封面。结尾按目标判定，教程能否复现、剧情能否收束、品牌能否记住、关注是否有未来价值、转化的利益和入口是否真实。
 
-cover_source.independent 可填有独立封面、无独立封面或待核。用户确认没有独立封面，显示 N/A。仅收到 MP4，填待核。cover_source.displayed 写独立封面、平台选帧或待核，并以发布设置或列表截屏说明来源。正式设计稿尚无发布凭据时，covers.role 填独立封面。已知平台实际使用的图填发布封面，即使它就是首帧，也须有实际设置的证据。首帧、候选仅在各自栏评分。零分是已核的实得分。十维内容用已证实的入口表达与正文证据，避免因同一缺失重复扣分。
+对涉及状态变化的片段写前提、触发时刻、参考、预期与实见。expected_state 和 observed_state 使用同一套状态名，sequence 写可核连续画面的 start/end。画面、屏显、图形和声音分别决定怎样处理。事实错误、误认、真实遮挡单列发布阻碍。每处自填 finding 须有 interval、track、dimension、evidence、action、acceptance、disposition（本次取舍）、score_review（受影响分数及理由）。同主题不同位置独立登记，首页可归组。改观察后同时复核分项和建议。同一后果在一个主责维度扣分。
 
-每张图的 previews 用与 covers 完全相同的名称。source 写来源或帧时码，size 写实际检查的缩略宽度和版位，subject 填正确、错误或缺失、待核，benefit 填可辨、不清、待核，topic 写题目是否具体、真实且有区别。传播和美学分别评分，各 50。缩至 180px 核对产品、点击收益、标题新意和层级；再检查实际版位裁切。产品认错或利益不可辨会淘汰，保留自然光色等确实成立的分项。首帧得分只用当帧能见的信息；后文兑现单列，不能补首帧的识别分。
+十维分值继续用稳定字段名，语义依[量表](score-rubric.md)。缺某项时把该键从 marks 移到 pending，给原因；有证据再移回。复评和预测仅在基线完整时出正式总分。允许直接交部分报告。封面或开场的单项委托可单独提交设计稿、原图、源时码及校样，无需补一份整片评分。新量表为 creative-100-v2。
 
-弱或缺封面时，cover_plans 至少两种动机。每个包含 motive/source_frame/headline/crop/focus/placement/rationale/failure。做封面优化时用 cover_variants.py 交可编辑输入、A/B 成图和手机预览，标明实显或模拟。打开输出目录 preview.html 可对照 180px 模拟列表卡片。variants 的 layout 可选 photo（原帧满版）或 panel（独立文字区），focus_x/focus_y 与 text_x/text_y 均为 0–1 的相对位置，source_crop 可按左、上、右、下相对边界裁掉烧录字幕，motive 写点击理由。既有方案继续可渲染。现有素材能支持哪种主张、哪项缩小后会读不清，写清验收与淘汰条件。
 
-## 前三秒
-
-hook 用“主体与动作、受众相关、继续观看理由、前三秒可信线索”四个键，每项写 score 和 evidence（源秒数与当时可见或可听的证据）。满分依次为 4、4、5、4。先分别打分再相加写入十维首项。高分档从 14/17 起，继续观看理由至少 4、可信线索至少 3，并在 payoff 写明正文兑现的时码。它是编辑量表锚点，线上效果单用同版位实测。一般痛点问句即使受众清楚，也应说清矛盾是否可见、答案是否已被猜到。
-
-综合拆解给首选和备选。弱钩子须在 openings 中完整给出两种观看动机；强钩子可把原剪法作为对照。每种写 motive、beats（按 0–1、1–2、2–3 秒顺序的三个对象，各含 subject/picture/audio/caption）与 next_shot。首选保护原有正式亮相与递进。提前揭示若能靠画面、字幕或声音交代清楚，再看静音是否也能认出对象。identity.sound_on 和 muted 分别选清楚、误认、待核，写 evidence 和 fix。
-
-## 分轨保护、功能状态与交付
-
-assets 每项写 name/source/value/picture/display/graphics/sound/output/reason/loss。画面可保留、微调、替换、删除；注明源与成片时段、取舍、字幕能否单修。loss 取保留价值、有据取舍、无据丢失。确实不适用时填 no_assets_reason。剪前剪辑单 protect 逐名称承接资产；时间线每段填 screen（可注明无屏显），其余轨继续按全片方案填写。不能以技术扣分或修字幕省事为由直接删除好镜头。
-
-displays 每项填 time/action/expected/observed/reference/timing_reference/status/timing/fix。参考样张只证明数字字形；用同型号同模式连续实拍核复位时刻。保留各组零值、单位、图标、透视、亮度及运动；原片信息不足时提出最小补拍单。机器无屏或本片无相关状态，填 no_display_reason。产品状态错误、应归零却擦空、主体误认、价值镜头无据丢失，均进入发布前须改。
-
-首页列内容、技术、封面来源、四项钩子与全部阻碍。标准 HTML 模板的 cover_status、release_status 直接取评分器，hook_marks 写四个实得分，用“ / ”相连。执行 check_report_contract.py --require-current-rubric --require-v05。成对复评保留两位评审原始分数。盲审 observations 与复评 disputes 逐项写 time、issue、evidence、decision（须修／待核／已裁决）。有分歧时逐镜裁决。新版盲审表另填 hook 的四项与 payoff，评分器核对其合计。两版均使用同版规则重新评分，历史自评和旧盲审单独标记。缺点击或留存数据单列待核。
+技术适用项在打分前指定。export_context 取平台发布、保留源规格或待核。规范未知时保留原始测量并标出待核项。更新同一成片的判断时可在 review 添加 --previous-review 旧报告.json，逐处说明已关闭的问题、证据变化和分项／建议如何处理。
+保留或关闭历史观察时，closed_findings 按原问题 ID 填 evidence、score_review、disposition。对执行方向明确的发现，selected_edit 可写保留、微调、替换或删除，剪前快照会核对同一决定是否落在时间线上。
+实片综合审片会密查开头、末尾、剪点、事实时段。字幕或运动边界可用 criteria.inspect_spans 追加 start/end；全片排查使用 --full-frame-scan。回看闪帧候选后在 frame_reviews 按源帧编号写 status（已核、有缺陷填须修、待核）和 evidence。

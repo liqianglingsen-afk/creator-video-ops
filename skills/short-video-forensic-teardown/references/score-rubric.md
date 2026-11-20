@@ -1,8 +1,8 @@
 # Standard 100-Point Short Video Score Rubric
 
-新综合评分、剪前保护和复评须同时执行[0.5 封面、前三秒与镜头取舍](creative-evidence.md)。
+新综合评分、剪前保护和复评须同时执行[0.6 委托与证据约定](creative-evidence.md)。
 
-涉及优化建议或改后复评，采用 [0.4.0 全片方案与对照验收](full-revision.md) 的预测、保留资产、版位与报告约定。历史报告沿用生成时的口径。
+涉及优化建议或改后复评，采用 [0.6 全片方案与对照验收](full-revision.md) 的预测、保留资产、版位与报告约定。历史报告沿用生成时的口径。
 
 
 Use this fixed rubric for every Chinese short-video forensic teardown unless the user provides a different explicit scoring system.
@@ -16,7 +16,7 @@ The rubric is intentionally stable across video types. Product launches, brand f
 - Do not give full credit for a dimension that was not verified.
 - Do not silently change weights for different video categories.
 - If evidence is missing or partial, apply the cap rules below.
-- 新报告采用 `creative-100-v1`。十项实得分直接相加，应用有依据的总分封顶后，以精确值比较目标。84.99 未过线，85.00 达到默认线。未标版本的 0.2.0 报告仍按原始分 × 100 / 98 解读。比较两次剪辑时，以同一版量表分别审看原片与新导出。
+- 新报告采用 `creative-100-v2`。十项实得分直接相加，应用有依据的总分封顶后，以精确值比较目标。84.99 未过线，85.00 达到默认线。未标版本的 0.2.0 报告仍按原始分 × 100 / 98 解读。比较两次剪辑时，以同一版量表分别审看原片与新导出。
 - 优化目标最低 85/100，更高目标按简报。分列原版、预估与实际导出复评。已有高分版本须查改后有无退步。评分采用下表固定权重，宣传方式与行动证据按片子目的解释。
 - 每个子项从零至所列上限计分。缺失或相反为零，部分实现按可见证据给部分分，完整且在目标版位可复核才给满分。记录主要扣分的时码、文案或源帧；同一缺陷只扣其主责项，另一个维度可交叉引用。
 
@@ -64,5 +64,5 @@ Every report must include:
 - A score table with all 10 fixed dimensions.
 - Current score and target score.
 - Evidence for each deduction.
-- The 1–3 most consequential changes and the shots to preserve. Mandatory review of the first three seconds and the ending. Rank misleading claims or broken action paths first, then the bottleneck for the stated goal; use strength of evidence, edit cost and expected score lift as tie-breakers.
+- Up to three consequential changes and the shots to preserve. Mandatory review of the first three seconds and the ending. Rank misleading claims or broken action paths first, then the bottleneck for the stated goal; use strength of evidence, edit cost and expected score lift as tie-breakers.
 - Any cap rule that was applied.

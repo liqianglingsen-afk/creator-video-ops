@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from html import escape
 import math
@@ -100,6 +101,9 @@ def render(plan_file: Path, output: Path) -> None:
         raise ValueError("需要可读视频与字体，以及一个新的输出目录")
     if len(spec["variants"]) < 2:
         raise ValueError("至少提供两种不同点击理由的候选")
+    motives = {str(v.get("motive","")).strip() for v in spec["variants"]}
+    if "" in motives or len(motives)<2:
+        raise ValueError("须说明两个不同观看理由")
     output.parent.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(dir=output.parent) as tmp:
         dest = Path(tmp) / "covers"
@@ -115,16 +119,23 @@ def render(plan_file: Path, output: Path) -> None:
         portable = dict(spec, video=str(video), font=str(font))
         if spec.get("published_cover"):
             portable["published_cover"] = str((plan_file.parent / spec["published_cover"]).resolve())
+        images = set()
         for idx, variant in enumerate(spec["variants"], 1):
             name = f"cover-{idx}"
             frame = dest / (name + "-frame.png")
             source_frame(video, float(variant["seconds"]), frame)
             lines = variant["headline"]
-            if not isinstance(lines, list) or not 1 <= len(lines) <= 3 or not all(isinstance(t, str) and t.strip() for t in lines):
-                raise ValueError("每个候选标题需一至三行非空文字")
+            if not isinstance(lines, list) or not 0 <= len(lines) <= 3 or not all(isinstance(t, str) and t.strip() for t in lines):
+                raise ValueError("标题最多三行非空文字。无字封面使用空数组和 photo 版式")
+            if not lines and variant.get("layout") != "photo":
+                raise ValueError("无字封面使用满版画面 photo")
             for ratio, height in (("3x4", 1200), ("1x1", 900), ("9x16", 1600)):
                 canvas = draw_layout(frame, font, variant, lines, height)
                 if height == 1200:
+                    signature = hashlib.sha256(canvas.tobytes()).digest()
+                    if signature in images:
+                        raise ValueError("两案实际成图相同，请调整标题、取帧或构图")
+                    images.add(signature)
                     canvas.save(dest / (name + ".png"))
                     previews(canvas, dest, name)
                 else:

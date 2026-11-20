@@ -55,7 +55,7 @@ def local(root, href):
     return root / unquote(link.path)
 
 
-def revision_check(path, stage, *, current=False):
+def revision_check(path, stage, *, current=False, version="revision-0.4"):
     parser = Links()
     parser.feed(path.read_text(encoding="utf-8"))
     linked = not parser.markers
@@ -75,12 +75,16 @@ def revision_check(path, stage, *, current=False):
     ).hexdigest()
     marker = parser.markers[0]
     if (
-        doc["schema_version"] != "revision-0.4"
+        doc["schema_version"] != version
         or doc["kind"] != stage
         or identity != marker.get("data-record-sha256")
         or doc["seal"] != marker.get("data-plan-seal")
     ):
         raise ValueError("报告与数据快照不一致")
+    if version == "revision-0.6":
+        from postscore.revision import render_packet
+        if path.read_text(encoding="utf-8") != render_packet(doc):
+            raise ValueError("方案摘要、时间线或对照表与对应数据不一致")
     if current:
         sides = [doc["baseline"]] + ([doc["after"]] if stage == "comparison" else [])
         for side in sides:

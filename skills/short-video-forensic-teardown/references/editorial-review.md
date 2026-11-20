@@ -1,13 +1,13 @@
-# 传播、美学与剪辑决策 · v0.3.0
+# 传播、美学与剪辑决策 · v0.6.0
 
-涉及优化建议或改后复评，采用 [0.4.0 全片方案与对照验收](full-revision.md) 的预测、保留资产、版位与报告约定。历史报告沿用生成时的口径。
+涉及优化建议或改后复评，采用 [0.6 全片方案与对照验收](full-revision.md) 的预测、保留资产、版位与报告约定。历史报告沿用生成时的口径。
 
 
 先写受众、实际发布入口、首要业务目标。目标未给定时说明暂定假设；涨粉和成交分别生成行动设计。只委托拆解或评分时保留原片。委托优化时生成试剪并复评。
 
 ## 从哪里决定先改什么
 
-逐段核对入口承诺、前3秒、中段兑现、事实依据、画面与包装、收藏分享与品牌、结尾行动、行动承接。每项记录时码或素材证据，选已核、待核或须修。前 0–1、1–2、2–3 秒分别记录看见什么、观众为何留下、正文在哪一秒兑现。先静音、再只听声音，最后正常速度回看。结尾要能复述一个主动作、观众收益和真正可用的下一步；涨粉看账号以后给什么，成交看入口能否直达本品和决策证据。知识片看学会什么，品牌片可按品牌回想验收。找出谁会分享给谁、为何值得收藏，保护内容调性。
+逐段核对入口承诺、前3秒、中段兑现、事实依据、画面与包装、收藏分享与品牌、结尾行动、行动承接。每项记录时码或素材证据，选已核、待核或须修。按前三秒内的实际事件（短片截至片尾）记录看见什么、观众为何留下、正文在哪一秒兑现。先静音、再只听声音，最后正常速度回看。结尾要能复述一个主动作、观众收益和真正可用的下一步；涨粉看账号以后给什么，成交看入口能否直达本品和决策证据。知识片看学会什么，品牌片可按品牌回想验收。找出谁会分享给谁、为何值得收藏，保护内容调性。
 
 优先修关键事实错误、承诺落空、不可用入口和实际阻断播放的问题。其次按目标和流量入口定位瓶颈（封面打开、首秒选择、正文留存、行动、承接），再看证据与成本；高技术扣分本身不能决定改剪顺序。首页最多三项，全部发布前问题另列。每项给证据、源/成片位置、操作参数、约束与验收。注明值得保留的时码与技术告警复核理由。没有行为数据，瓶颈标为编辑判断并写反例。
 
@@ -19,15 +19,15 @@
 
 ```json
 {"video":"source.mp4","font":"brand.ttf","variants":[
- {"seconds":1.4,"headline":["小滴水盘","放得下吗？"],"subline":"同台实放","focus_y":0.55},
- {"seconds":3.2,"headline":["秤身占多少空间？"],"subline":"看实物和盘沿","focus_y":0.45}]}
+ {"motive":"预测结果","seconds":0.4,"headline":["下一秒会去哪？"],"subline":"观察起点","focus_y":0.55},
+ {"motive":"学会步骤","seconds":1.2,"headline":["如何看懂这一步？"],"subline":"还原过程","focus_y":0.45}]}
 ```
 
 可选 `published_cover` 输入真实封面。运行 `python "<skill-dir>/scripts/cover_variants.py" cover-plan.json --output covers-v1`，需 FFmpeg 和 Pillow。输出编辑用 JSON、完整取帧、成图及 180 像素宽预览。以图片作证据，避免在未发布的设计上声称实测点击率。
 
 ## 与评分器共用一份判断
 
-新综合评分按[0.5 审片字段](creative-evidence.md)，用 Framecheck 0.5+ 的 `postscore brief source.mp4 --output notes.json` 创建可编辑审片底稿。以实际审片填写：八项 checks 各有 status（已核/待核/须修）与 evidence；bottleneck 取一个环节或待核。keep 列保留的镜头。findings 每项含 topic、stage（八个环节之一）、level（发布前须改/影响目标/精修）、evidence、action、acceptance、confidence（实测/编辑判断/待验证）、cost（现有素材剪辑/新增包装或配音/补拍）。同一技术告警可在 technical_issue 指定同名问题合并；retain_alerts 写可保留告警及理由。须修环节要有对应发布前修改项。
+新综合评分按[0.6 审片字段](creative-evidence.md)，用 Framecheck 0.6+ 的 `postscore brief source.mp4 --output notes.json` 创建可编辑审片底稿。以实际审片填写：八项 checks 各有 status（已核/待核/须修）与 evidence；bottleneck 取一个环节或待核。keep 列保留的镜头。findings 每项含 topic、stage（八个环节之一）、level（发布前须改/影响目标/精修）、evidence、action、acceptance、confidence（实测/编辑判断/待验证）、cost（现有素材剪辑/新增包装或配音/补拍）。同一技术告警逐处记时段与轨道；同名问题只在摘要归组；retain_alerts 写可保留告警及理由。须修环节要有对应发布前修改项。
 
 covers 中每张图提供 name、role（发布封面/首帧/候选）、image（相对 notes 路径）、marks（上述十项中文键，各含整数 score 与 evidence）、integrity（status 和 evidence）、correction。cover_required 表明是否交付当前发布封面。experiment 填变量、对照、挑战、主指标、护栏、停止条件。仅改变一个主要变量；基准、挑战和未验证的预期效果明确分开。可以按下列方式输出两份实剪再用相同设置复评。
 
@@ -44,6 +44,6 @@ postscore review source.mp4 --preset short_social --html --json --editorial note
 
 metrics_csv 可指定归一后的后台 CSV（UTF-8），列名为 source_sha256,variant,traffic,window,metric,numerator,denominator,kind。kind=proportion 用于同一归因范围的占比，kind=per_view 用于每观看次数。每份文件只含对应成片数据。对打开率加点开后的观看或目标行动护栏；涨粉记录归因关注及后续回访，成交记录点击及支付，窗口与分母分别注明。每次比较只变一个因素，记录版位、对象和样本量，无法随机的测试标明混杂。没有分母、流量不可比或样本不足，保留候选并注明待判。内容、技术、封面三项各自复评。85 是底线，过线后继续试有依据且低成本的修改，若伤及更重要的证据或无可验证收益则停止。
 
-综合评分时，在 notes.json 填写 content，version 为 creative-100-v1。marks 的键与十维量表完全相同，每项含 score 和 evidence。需要总分封顶时填 overall_cap 与 cap_reason。评分器会复算单项、合计、封顶及目标。封面工具同时输出 3:4 主图、自动中心裁切压力测试和 1:1、9:16 重新排版的成图与小预览。硬裁切丢标题时，改用对应版式。
+综合评分时，在 notes.json 填写 content，version 为 creative-100-v2。marks 的键与十维量表完全相同，每项含 score 和 evidence。需要总分封顶时填 overall_cap 与 cap_reason。评分器会复算单项、合计、封顶及目标。封面工具同时输出 3:4 主图、自动中心裁切压力测试和 1:1、9:16 重新排版的成图与小预览。硬裁切丢标题时，改用对应版式。
 
-团队校准可运行 `postscore calibrate cases.csv --output agreement.json`。清单按 case,type,report,first_a,first_b,score_a,score_b 填写。用两位编辑分别盲审后对齐的问题名比对工具前三项，保留分歧与分差。建议从四类各三条真实片起步，定权与最终验收使用不同样本。
+团队校准可运行 `postscore calibrate cases.csv --output agreement.json`。清单按 case,type,report,first_a,first_b,score_a,score_b 填写。用两位编辑分别盲审后对齐的问题名比对工具前三项，保留分歧与分差。建议用约十二条真实作品覆盖教学、访谈、剧情、品牌、无声及转化六类，定权与最终验收使用不同样本。

@@ -54,6 +54,6 @@ python path/to/skill-creator/scripts/quick_validate.py skills/creator-video-work
 
 短视频 HTML 报告还必须通过插件内的 `check_report_contract.py` 与 `check_report_layout.py`。
 
-## 0.5.0 封面、开场与产品展示
+## 0.6.0 通用拆解与评分
 
-综合评分使用 Framecheck 0.5，分别核对独立封面、平台实显与候选，按四项证据计算前三秒，保护有辨识价值的镜头。主体误认和错误屏显进入发布前必改清单。见[字段与交付验收](skills/short-video-forensic-teardown/references/creative-evidence.md)。
+配套 Framecheck 0.6。新委托先确定意图、入口、时长和素材。内容十维共 100 分，封面传播与美学各 50 分；分别显示原始技术检测与任务适用项。执行方案、素材版本和导出复评共用剪前快照，HTML 从同一份 JSON 渲染。见[证据与委托约定](skills/short-video-forensic-teardown/references/creative-evidence.md)及[报告验收](skills/short-video-forensic-teardown/references/forensic-output-contract.md)。
