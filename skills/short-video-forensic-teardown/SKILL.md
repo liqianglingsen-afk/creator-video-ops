@@ -9,7 +9,11 @@ Use this as the primary workflow for Chinese short-video teardown. The expected 
 
 If the user explicitly invokes `viral-video-deep-dive`, still use this workflow for new Chinese short-video teardown unless they only want to polish an existing report.
 
-## 全片修改及标准复评 · 0.4.0
+## 综合审片 · 0.5.0
+
+先读[封面、前三秒与镜头取舍](references/creative-evidence.md)。新综合报告调用 Framecheck 0.5 的 brief/review，在首页写独立封面与平台实显状态、钩子四项及发布结论。封面缺失或薄弱时给两个可执行方向；按片子主任务保护首次亮相、实操、外观及收束。正常播放、静音各过一遍。功能错误和主体误认优先修。
+
+## 全片修改及标准复评
 
 给优化建议时，按[全片修改与复评](references/full-revision.md)建立包含逐项预测、全时间线与保护资产的剪前快照。执行“按方案修改”时沿用已确认快照，交独立导出、包装三项、版位校样及标准原改对照 HTML/JSON；仅有单片技术报告不能结案。已有原片和改片但无预测记录时，走历史回放。仅技术检测沿用单片或批量入口。
 
@@ -140,7 +144,7 @@ python "<skill-dir>/scripts/extract_style_profile.py" "<frames-dir>" -o "<style-
    - Run:
 
 ```bash
-python "<skill-dir>/scripts/check_report_contract.py" "<html-path>" --require-current-rubric --require-editorial
+python "<skill-dir>/scripts/check_report_contract.py" "<html-path>" --require-current-rubric --require-v05
 ```
 
    - Run:
@@ -149,7 +153,7 @@ python "<skill-dir>/scripts/check_report_contract.py" "<html-path>" --require-cu
 python "<skill-dir>/scripts/check_report_layout.py" "<html-path>"
 ```
 
-   - For a proposed edit, also validate the plan packet with `check_report_contract.py plan.html --revision-stage plan`. For a completed edit, validate `comparison.html --revision-stage comparison` and link it as the primary review. A standalone technical report is insufficient for this route.
+   - For a proposed edit, also validate the plan packet with `check_report_contract.py plan.html --revision-stage plan --require-v05`. For a completed edit, validate `comparison.html --revision-stage comparison --require-v05` and link it as the primary review. A standalone technical report is insufficient for this route.
    - Fix any missing required section, broken image, excessive header whitespace, or unsafe evidence-image cropping before final response.
    - For old pre-upgrade reports only, `--legacy` may be used to inspect compatibility; new reports must pass the strict check.
 

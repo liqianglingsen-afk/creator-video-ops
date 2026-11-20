@@ -164,7 +164,7 @@ class EditorialFields(HTMLParser):
         attr = dict(attrs)
         name = attr.get("data-contract")
         names = {"editorial-goal", "hook-payoff", "action-path", "revision-priorities", "preserve-shots",
-                 "editorial-json", "editorial-report", "editorial-pending", "current-score", "raw-score"}
+                 "editorial-json", "editorial-report", "editorial-pending", "hook-marks", "cover-source", "release-status", "current-score", "raw-score"}
         if name in names:
             self.counts[name] = self.counts.get(name, 0) + 1
             self.visible[name] = ""
@@ -181,7 +181,7 @@ class EditorialFields(HTMLParser):
             self.active = None
 
 
-def editorial_errors(html, directory):
+def editorial_errors(html, directory, *, current=False):
     data = EditorialFields()
     data.feed(html)
     errors = []
@@ -191,7 +191,7 @@ def editorial_errors(html, directory):
     if any(n > 1 for n in data.counts.values()):
         errors.append("duplicate editorial fields")
     if data.visible.get("editorial-pending", "").strip() and not data.links:
-        return errors
+        return errors + (["新版综合报告须附实片审片数据"] if current else [])
     companion_hash = None
     for name in ("editorial-report", "editorial-json"):
         link = urlsplit(data.links.get(name, ""))
@@ -199,15 +199,31 @@ def editorial_errors(html, directory):
         if link.scheme or link.netloc or not path.is_file():
             errors.append("missing local review artifact: " + name)
         elif name == "editorial-report":
-            match = re.search(r'data-source-sha256="([0-9a-f]{64})"', path.read_text(encoding="utf-8"))
+            companion = path.read_text(encoding="utf-8")
+            if current and 'data-criteria="0.5"' not in companion:
+                errors.append("评分附件缺 0.5 证据区")
+            match = re.search(r'data-source-sha256="([0-9a-f]{64})"', companion)
             companion_hash = match.group(1) if match else None
         elif name == "editorial-json":
             try:
                 record = json.loads(path.read_text(encoding="utf-8"))["editorial"]
-                if record["schema_version"] != "editorial-0.3" or not record["status"] or len(record["checks"]) != 8:
+                if record["schema_version"] not in {"editorial-0.3", "editorial-0.5"} or not record["status"] or len(record["checks"]) != 8:
                     errors.append("incomplete editorial review")
                 if record.get("source_sha256") != companion_hash:
                     errors.append("editorial HTML and JSON use different sources")
+                if current:
+                    if record["schema_version"] != "editorial-0.5" or not record.get("content"):
+                        errors.append("须提供 0.5 综合审片数据与内容分")
+                    else:
+                        criteria = record["criteria"]
+                        keys = ("主体与动作", "受众相关", "继续观看理由", "前三秒可信线索")
+                        scores = [criteria["hook"][k]["score"] for k in keys]
+                        if sum(scores) != Decimal(record["content"]["marks"]["前3秒语言心理钩子"]["score"]):
+                            errors.append("钩子四项与十维评分不一致")
+                        for key, value in [("cover-source", record["cover_status"]), ("release-status", record["status"]),
+                                           ("hook-marks", " / ".join(map(str, scores)))]:
+                            if data.visible.get(key, "").strip() != value:
+                                errors.append("首页与评分附件不一致：" + key)
                 if record.get("content"):
                     for field, key in (("current-score","total"), ("raw-score","raw")):
                         if Decimal(data.visible[field].strip()) != Decimal(record["content"][key]):
@@ -226,6 +242,7 @@ def main() -> int:
     parser.add_argument("report", help="Path to the HTML report.")
     parser.add_argument("--revision-stage",choices=("plan","comparison"),help="Validate a v0.4 plan or paired review and its evidence.")
     parser.add_argument("--require-editorial", action="store_true", help="Validate v0.3 editorial decisions and linked evidence.")
+    parser.add_argument("--require-v05", action="store_true", help="核对新版评分、封面来源和首页发布结论")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--require-current-rubric", action="store_true",
                       help="Require a versioned direct-100 score table for a new report.")
@@ -250,7 +267,7 @@ def main() -> int:
         if args.legacy:
             parser.error("新版方案或复评不能使用旧报告的宽松校验")
         try:
-            if revision_check(html_path,args.revision_stage):
+            if revision_check(html_path,args.revision_stage, current=args.require_v05):
                 print("PASS: verified "+args.revision_stage+" packet")
                 return 0
         except (ValueError, OSError, KeyError, TypeError) as exc:
@@ -283,7 +300,7 @@ def main() -> int:
         "bad-card": count_contract_marker(html, "bad-card"),
     }
 
-    failures: list[str] = editorial_errors(html, html_path.parent) if args.require_editorial else []
+    failures: list[str] = editorial_errors(html, html_path.parent, current=args.require_v05) if args.require_editorial or args.require_v05 else []
     if missing_terms:
         failures.append("missing required terms: " + ", ".join(missing_terms))
     if broken_images:

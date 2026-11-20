@@ -53,3 +53,7 @@ python path/to/skill-creator/scripts/quick_validate.py skills/creator-video-work
 ```
 
 短视频 HTML 报告还必须通过插件内的 `check_report_contract.py` 与 `check_report_layout.py`。
+
+## 0.5.0 封面、开场与产品展示
+
+综合评分使用 Framecheck 0.5，分别核对独立封面、平台实显与候选，按四项证据计算前三秒，保护有辨识价值的镜头。主体误认和错误屏显进入发布前必改清单。见[字段与交付验收](skills/short-video-forensic-teardown/references/creative-evidence.md)。

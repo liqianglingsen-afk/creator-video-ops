@@ -1,5 +1,7 @@
 # 短视频全片修改与原改复评 · v0.4.0
 
+新综合评分、剪前保护和复评须同时执行[0.5 封面、前三秒与镜头取舍](creative-evidence.md)。
+
 仍采用 creative-100-v1 十维内容量表，最低目标为 85。修改依据是观众任务和整条片的声画效果。用户只委托评分时保留成片；委托剪辑时，把下列步骤做完并交付实际导出与标准原改报告。命令需 Framecheck 0.4+。编辑器、已核操作和具体素材根据项目选择。
 
 ## 剪前
@@ -11,7 +13,7 @@ postscore revision-init original.mp4 before.json --output draft.json
 postscore revision-plan original.mp4 before.json draft.json --output plan-v1
 ```
 
-两条命令之间由 Codex 按实片填写 draft。forecast 的每个维度给 low、expected、high、basis、confidence。写绝对分，体现可能退步项和成立条件；软件逐维限幅并合计。目标与预估各自列示，方案低于目标也可提交，next_if_short 交代如何补差。技术分需导出实测。用 `check_report_contract.py plan.html --revision-stage plan` 验收，归档 plan.json 和 plan.html 后再剪，方案变动生成新快照。无剪前记录的历史片使用 forecast_context=历史回放、forecast={}，不得补造预测。
+两条命令之间由 Codex 按实片填写 draft。forecast 的每个维度给 low、expected、high、basis、confidence。写绝对分，体现可能退步项和成立条件；软件逐维限幅并合计。目标与预估各自列示，方案低于目标也可提交，next_if_short 交代如何补差。技术分需导出实测。用 `check_report_contract.py plan.html --revision-stage plan --require-v05` 验收，归档 plan.json 和 plan.html 后再剪，方案变动生成新快照。无剪前记录的历史片使用 forecast_context=历史回放、forecast={}，不得补造预测。
 
 timeline 从原片首帧覆盖到末帧，每段 source、destinations 使用 start/end 秒数；action 取保留、微调、替换、删除。分别写 picture、sound、graphics、reason、acceptance。删除的 destinations 为空；重用及转场按实际成片位置列出。多来源素材在 picture/sound 写明文件、轨道和入出点。完整单之外首页仍突出最多三项关键修改。仅有压制成片时核实烧录字与混音可否局部修复；先试现有素材，确有缺口才编补拍单。
 
@@ -49,7 +51,7 @@ audit 的 protected 按每个保护项填 status（保留、替换已核、丢�
 
 ```sh
 postscore revision-compare plan-v1/plan.json original.mp4 cut-v1/edited.mp4 after.json audit.json --output comparison-v1
-python "<skill-dir>/scripts/check_report_contract.py" comparison-v1/comparison.html --revision-stage comparison
+python "<skill-dir>/scripts/check_report_contract.py" comparison-v1/comparison.html --revision-stage comparison --require-v05
 ```
 
 分析和执行共用同一份剪前快照；单条 QC 只是复评附件。原片拆解主报告链接 plan.html；按方案修改后的主报告交付 comparison.html、comparison.json 和视频。内容过线也要检查事实、保护项、包装、版位碰撞及自评/盲审的过线分歧。缺平台数据标待核，盖住产品或误导观众的版本标须改。

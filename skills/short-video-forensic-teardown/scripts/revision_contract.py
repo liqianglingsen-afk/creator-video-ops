@@ -55,7 +55,7 @@ def local(root, href):
     return root / unquote(link.path)
 
 
-def revision_check(path, stage):
+def revision_check(path, stage, *, current=False):
     parser = Links()
     parser.feed(path.read_text(encoding="utf-8"))
     linked = not parser.markers
@@ -81,6 +81,16 @@ def revision_check(path, stage):
         or doc["seal"] != marker.get("data-plan-seal")
     ):
         raise ValueError("报告与数据快照不一致")
+    if current:
+        sides = [doc["baseline"]] + ([doc["after"]] if stage == "comparison" else [])
+        for side in sides:
+            c = side.get("criteria")
+            if not c or not c.get("cover_source") or len(c.get("hook", {})) != 4:
+                raise ValueError("新版交付缺封面来源与四项钩子证据")
+            if sum(m["score"] for m in c["hook"].values()) != float(side["content"]["marks"]["前3秒语言心理钩子"]["score"]):
+                raise ValueError("新版交付的钩子得分不一致")
+        if stage == "comparison" and doc["after"]["blockers"] and doc["status"] != "发布前须改":
+            raise ValueError("有发布前错误的改片不能通过")
     base = doc["baseline"]["content"]["marks"]
     if len(base) != 10 or set(parser.rows) != set(base):
         raise ValueError("缺少完整十维可见评分表")

@@ -1,5 +1,7 @@
 # Standard 100-Point Short Video Score Rubric
 
+新综合评分、剪前保护和复评须同时执行[0.5 封面、前三秒与镜头取舍](creative-evidence.md)。
+
 涉及优化建议或改后复评，采用 [0.4.0 全片方案与对照验收](full-revision.md) 的预测、保留资产、版位与报告约定。历史报告沿用生成时的口径。
 
 

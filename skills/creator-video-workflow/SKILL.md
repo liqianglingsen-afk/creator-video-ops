@@ -7,7 +7,11 @@ description: Orchestrate an end-to-end Chinese creator-video workflow from publi
 
 Coordinate the existing specialist Skills. Do not reimplement their detailed analysis rules in this file.
 
-## 全片修改及标准复评 · 0.4.0
+## 0.5.0 综合评分与改片复核
+
+用 Framecheck 0.5+ 的 brief 与 review，依照[证据字段和验收](../short-video-forensic-teardown/references/creative-evidence.md)填写主任务、封面来源、四项钩子、资产分轨及屏显，区分编辑判断与后台数据。综合拆解、改片复评均走新入口。仅技术检测可单独运行；旧报告继续按其生成口径解读。
+
+## 全片修改及标准复评
 
 给优化建议时，按[全片修改与复评](../short-video-forensic-teardown/references/full-revision.md)建立包含逐项预测、全时间线与保护资产的剪前快照。执行“按方案修改”时沿用已确认快照，交独立导出、包装三项、版位校样及标准原改对照 HTML/JSON；仅有单片技术报告不能结案。已有原片和改片但无预测记录时，走历史回放。仅技术检测沿用单片或批量入口。
 

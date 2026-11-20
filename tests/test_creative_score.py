@@ -89,3 +89,67 @@ class EditorialAttachmentTests(unittest.TestCase):
             self.assertTrue(editorial_errors(section,directory))
             self.assertFalse(editorial_errors(base+'<p data-contract="editorial-pending">缺素材，待核</p>',directory))
             self.assertTrue(editorial_errors(base,directory))
+
+
+class CurrentEvidenceTests(unittest.TestCase):
+    def test_no_artifact_cannot_pass_as_current(self):
+        from tempfile import TemporaryDirectory
+        from check_report_contract import editorial_errors
+        with TemporaryDirectory() as tmp:
+            errors = editorial_errors('<p data-contract="editorial-pending">未评</p>', Path(tmp), current=True)
+            self.assertIn("新版综合报告须附实片审片数据", errors)
+
+    def test_scores_cover_and_release_match_companion(self):
+        from tempfile import TemporaryDirectory
+        from check_report_contract import editorial_errors
+        import json
+        with TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            identity = "b" * 64
+            (folder / "review.html").write_text(f'<section data-criteria="0.5" data-source-sha256="{identity}"></section>')
+            cover_status="无独立封面 · N/A ｜ 平台实显待核"
+            focus="前3秒语言心理钩子"
+            keys=("主体与动作","受众相关","继续观看理由","前三秒可信线索")
+            record=dict(schema_version="editorial-0.5",source_sha256=identity,status="发布前须改",
+                        checks=dict.fromkeys(range(8),"已核"),cover_status=cover_status,
+                        content=dict(total="68",raw="68",marks={focus:dict(score="10")}),
+                        criteria=dict(hook={k:dict(score=v) for k,v in zip(keys,[3,4,2,1])}))
+            (folder/"review.json").write_text(json.dumps({"editorial":record}))
+            fields=dict.fromkeys(["editorial-goal","hook-payoff","action-path","revision-priorities","preserve-shots"], "本次实片依据")
+            fields.update({"current-score":"68","raw-score":"68","hook-marks":"3 / 4 / 2 / 1","cover-source":cover_status,"release-status":"发布前须改"})
+            html="".join(f'<span data-contract="{k}">{v}</span>' for k,v in fields.items())
+            html+='<a data-contract="editorial-json" href="review.json">JSON</a><a data-contract="editorial-report" href="review.html">HTML</a>'
+            self.assertEqual(editorial_errors(html,folder,current=True),[])
+            self.assertTrue(editorial_errors(html.replace(cover_status,"封面达标"),folder,current=True))
+            self.assertTrue(editorial_errors(html.replace("3 / 4 / 2 / 1","4 / 4 / 4 / 1"),folder,current=True))
+
+
+class CoverLayoutTests(unittest.TestCase):
+    def test_photo_layout_and_normalized_crop(self):
+        from tempfile import TemporaryDirectory
+        try:
+            from PIL import Image, ImageFont
+            from cover_variants import draw_layout, preview_page
+        except ImportError:
+            self.skipTest("封面渲染需 Pillow")
+        candidates = ["DejaVuSans.ttf", "Arial.ttf", "/System/Library/Fonts/Helvetica.ttc"]
+        font = None
+        for candidate in candidates:
+            try:
+                font = ImageFont.truetype(candidate, 20).path
+                break
+            except OSError:
+                pass
+        if not font:
+            self.skipTest("需系统字体")
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp)/"cover.png"
+            photo = Image.new("RGB",(200,400),"white")
+            photo.paste("red",(0,300,200,400))
+            photo.save(path)
+            variant = {"layout":"photo","source_crop":[0,0,1,0.74],"text_x":0.1,"text_y":0.05}
+            layout = draw_layout(path,font,variant,["Product"],1200)
+            self.assertEqual(layout.getpixel((899,1199)),(255,255,255))
+            with self.assertRaises(ValueError):
+                draw_layout(path,font,variant | dict(source_crop=[1,0,1,1]),["Product"],1200)
+            self.assertIn("模拟列表",preview_page([dict(headline=["Product"])]))
